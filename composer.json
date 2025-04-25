@@ -2,7 +2,7 @@
     "name": "rum/crud-ajax",
     "autoload": {
         "psr-4": {
-            "CrudAjax\\": "app/"
+            "CrudAjax\\": "core/"
         }
     },
     "authors": [

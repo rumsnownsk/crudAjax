@@ -1,0 +1,114 @@
+html{
+    height: 100%;
+}
+/*body {*/
+/*    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+/*    color: #333;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    height: 100%;*/
+/*}*/
+
+ul, li, p, label {
+    margin: 0;
+    padding: 0;
+}
+
+a, a:hover {
+    text-decoration: none;
+}
+
+.redMarker{
+    color: #ff6163;
+}
+thead th{
+    text-align: center;
+}
+thead .publishCol{
+    min-width: 100px;
+}
+tr .image_td{
+    text-align: center;
+}
+
+tr .image_td img{
+    height: 120px;
+}
+
+.hide{
+    display: none;
+}
+
+.admin_menu_right a{
+    display: inline-flex;
+    width: 70px;
+    justify-content: center;
+}
+
+/*      HEADER :: BEGIN     */
+
+
+.adminContent {
+    width: 90%;
+    min-width: 500px;
+    margin: 0 auto;
+}
+
+h2{
+    text-align: center;
+    padding-bottom: 40px;
+}
+
+.adminContent form{
+    margin: auto;
+    width: 66%;
+    min-width: 600px;
+}
+
+.form-group{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    margin: 0;
+}
+
+.help-block{
+    font-size: 13px;
+    text-indent: 10px;
+}
+
+.form-group__label{
+    font-size: 20px;
+    width: 20%;
+    min-width: 250px;
+    line-height: 1em;
+}
+
+
+.form-group__data{
+    width: 80%;
+}
+
+.form-group select {
+    height: 30px;
+}
+
+.form-group input[type=checkbox] {
+    width: 25px
+}
+
+.form-group__correct img{
+    display: block;
+    padding-bottom: 10px;
+    width: 300px;
+}
+
+.form-group__correct{
+    height: auto;
+    padding-bottom: 20px;
+}
+
+.inputCoordinate{
+    -moz-appearance: textfield;
+}
