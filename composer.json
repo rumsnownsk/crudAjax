@@ -2,7 +2,8 @@
     "name": "rum/crud-ajax",
     "autoload": {
         "psr-4": {
-            "CrudAjax\\": "core/"
+            "CrudAjax\\": "core/",
+            "App\\Controllers\\": "app/Controllers/"
         }
     },
     "authors": [
@@ -13,6 +14,7 @@
     ],
     "require": {
         "php": ">=8.2",
-        "symfony/var-dumper": "^7.2"
+        "symfony/var-dumper": "^7.2",
+        "ext-pdo": "*"
     }
 }
