@@ -1,214 +1,183 @@
-$(function () {
+const divContent = document.querySelector('.content')
+// delegate events (делегирование событий)
 
+divContent.addEventListener('click', (e) => {
+    // pagination
+    if (e.target.className === 'page-link') {
+        e.preventDefault()
+        let page = +e.target.dataset.page; // "+" - означает привести к значению integer
 
-    /* подсветка активного пункта меню в Навигации */
-    let currentUri = location.origin + location.pathname.replace(/\/$/, '');
-    $('.menu a').each(function () {
-        let href = this.href.replace(/\/$/, '');
-        if (currentUri === href) {
-            $(this).addClass('active')
+        let searchParams = new URLSearchParams({page: page}).toString();
+
+        if (page) {
+            fetch(`/pgn?${searchParams}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    document.querySelector(".countCities").innerHTML = data.countCities
+                    document.querySelector(".pagination").innerHTML = data.pagination
+                    document.querySelector(".table-responsive").innerHTML = data.table
+                });
         }
-    })
+    }
 
-    let iziModalAlertSuccess = $('.iziModal-alert-success')
-    let iziModalAlertError = $('.iziModal-alert-error')
+    // Get City for edit
+    if (e.target.classList.contains('btn-edit')) {
+        let id = +e.target.dataset.id;
+        if (id) {
+            console.log('str32 = ' + id)
 
-    iziModalAlertSuccess.iziModal({
-        padding: 20,
-        title: 'Success',
-        headerColor: '#00897b'
-    })
-    iziModalAlertError.iziModal({
-        padding: 20,
-        title: 'Error',
-        headerColor: '#e53935'
-    })
-
-
-    /* отправка заявки для рассмотрения стоимости
-    * получения Паспорта Фасада */
-    $('.ajax-form').on('submit', function (e) {
-        e.preventDefault();
-        let form = $(this);
-        let btn = form.find('button');
-        let btnText = btn.text();
-        let method = form.attr('method');
-        if (method) {
-            method = method.toLowerCase();
-        }
-
-        let action = form.attr('action') ? form.attr('action') : location.href;
-
-        $.ajax({
-            url: action,
-            type: method === 'post' ? 'post' : 'get',
-            data: form.serialize(),
-            beforeSend: function () {
-                btn.prop('disable', true).text('Отправляю...');
-            },
-            success: function (res) {
-                res = JSON.parse(res);
-                if (res.status === 'success'){
-                    iziModalAlertSuccess.iziModal('setContent', res.data)
-                    form.trigger('reset')
-                    iziModalAlertSuccess.iziModal('open')
-                    if (res.redirect){
-                        $(document).on('closed', iziModalAlertSuccess, function (e) {
-                            location = res.redirect
-                        });
+            let searchParams = new URLSearchParams({
+                id: id,
+                action: 'getCity'
+            });
+            fetch(`/getCity?${searchParams}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data)
+                    if (data.answer === 'success') {
+                        document.getElementById('editName').value = data.city.name;
+                        document.getElementById('editPopulation').value = data.city.population;
+                        document.getElementById('editCity_id').innerHTML = data.city.id;
                     }
-                } else {
-                    iziModalAlertError.iziModal('setContent', {
-                        content: res.data,
-                    })
-                    iziModalAlertError.iziModal('open')
-                }
-                btn.prop('disable', false).text(btnText);
-            },
-            error: function () {
-                alert('server error');
-                btn.prop('disable', false).text(btnText);
-            }
-        })
-    })
-
-    /* ajax-подгрузка контента на странице
-    * Порядок получения паспорта */
-    $(document).on('click', '.step_item', function (e) {
-        $('a[data-id]').removeClass('active');
-        e.preventDefault();
-
-        let message = 'ok';
-        let step_id = $(this).data('id') || 1;
-
-        if (!step_id) {
-            console.log('non is step_id')
-            message = 'error with step_id'
-            step_id = 1;
+                })
         }
-        $(this).addClass('active');
-        // $(this).css({'box-shadow': 'none'});
+    }
 
-        $.ajax({
-            url: '/ajaxRequest',
-            type: 'get',
-            dataType: "json",
-            data: {
-                step_id: step_id,
-                message: message
-            },
-            success: function (res) {
-                let el = document.querySelector('#desc_proc')
-                el.remove();
-                $('#proc_desc_area').append(res.page_step)
-            },
-            error: function () {
-                console.log('ошибочка');
-            }
-        });
-    })
+    // delete City
+    if (e.target.classList.contains('btn-delete')) {
+        let id = +e.target.dataset.id;
+        if (id) {
+            console.log('str62 = ' + id)
 
-    /* ajax-загрузка контента
-     в зависимости от Категории
-     на странице Готовые паспорта */
-    $(document).on('click', '#categories a', function (e) {
-        $('a#loadMore').prop("hidden", false)
-        $('a[data-id]').removeClass('active');
-        countClick = 0
-        e.preventDefault();
-        let message = 'ok';
-        let catId = $(this).data('id');
+            let searchParams = new URLSearchParams({
+                id: id,
+                action: 'deleteCity'
+            }).toString();
+            fetch(`/deleteCity`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: searchParams
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.answer === 'success') {
+                        setTimeout(() => {
+                            Swal.fire({
+                                title: data.answer,
+                                icon: data.answer,
+                                html: data?.errors,
+                                confirmButtonText: 'City is deleted'
+                            });
+                            if (data.answer === 'success') {
+                                let tr = document.getElementById(`city-${id}`);
+                                tr.remove()
 
-        // if (!category_id) {
-        //     console.log('non is category_id')
-        //     message = 'error with step_id'
-        //     category_id = 1;
-        // }
-        $(this).addClass('active');
+                                addCityForm.reset();
+                            }
 
-        $.ajax({
-            url: '/worksByCategoryId?catId='+catId,
-            type: 'get',
-            dataType: "json",
-            data: {
-                catId: catId,
-                message: message
-            },
-            success: function (res) {
-                $('#listWorks').empty()
-                $('#listWorks').append(res.worksPage)
-            },
-            error: function () {
-                console.log('ошибочка');
-            }
-        });
-    })
-
-    /* ajax-подгрузка ПАГИНАЦИЯ контента на странице
-        "Готовые паспорта"
-        при нажатии кнопки ЗАГРУЗИТЬ ЕЩЁ */
-    let countClick = 0;
-    $(document).on('click', 'a#loadMore', function (e) {
-        e.preventDefault();
-
-        let catId = '';
-        console.log('old catId = '+catId)
-
-        countClick = countClick + 1;
-        catId = $('#categories a.active').data('id');
-        console.log('catId = '+catId)
-        console.log('countClick = '+countClick)
-
-        $.ajax({
-            url: "/loadMore",
-            type: 'get',
-            dataType: "json",
-            data: {
-                countClick: countClick,
-                catId: catId
-            },
-            success: function (res) {
-                if (res.status === false){
-                    $('a#loadMore').prop("hidden", true)
-                }
-                let el = $('#listWorks')
-                el.append(res.worksPage)
-            },
-            error: function () {
-                console.log('ошибочка');
-            }
-        });
-    })
+                        }, 1000)
+                    }
+                })
+        }
+    }
 })
 
-/* ajax-загрузка контента
-    при ПЕРВОЙ ЗАГРУЗКЕ страницы
-    "Готовые паспорта" */
-document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(function () {
-        if (location.pathname === '/works'){
-            let message = 'allWorks'
-            $.ajax({
-                url: "/allWorks",
-                type: 'get',
-                dataType: "json",
-                data: {
-                    message: message,
-                },
-                success: function (res) {
-                    console.log('message = '+ res.message)
-                    $('#listWorks').append(res.worksPage)
-                    $("a#loadMore")
-                        .prop("hidden", false)
-                        .attr("href", $(location).attr('href'))
-                },
-                error: function () {
-                    console.log('ошибочка: load all works');
+// Update city
+updateCityForm = document.getElementById('updateCityForm')
+btnUpdateSubmit = document.getElementById('btn-edit-submit')
+
+updateCityForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    updateCityForm.textContent = 'Saving...'
+    btnUpdateSubmit.disabled = true
+
+    let formData = new FormData(updateCityForm)
+    formData.append('someKey', 'someValue')
+
+    console.log(formData.get('name'))
+    console.log(formData.get('someKey'))
+
+    fetch('/updateCity', {
+        method: 'post',
+        body: formData
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            setTimeout(() => {
+                Swal.fire({
+                    title: data.answer,
+                    icon: data.answer,
+                    html: data?.errors,
+                    confirmButtonText: 'Cool'
+                });
+                if (data.answer === 'success') {
+                    console.log(data)
+                    // let idValue = document.getElementById('editCity_id').value;
+                    // let nameValue = document.getElementById('editName').value;
+                    // let populationValue = document.getElementById('editPopulation').value;
+                    // let tr = document.getElementById(`city-${idValue}`);
+                    // tr.querySelector('.name').innerHTML = nameValue;
+                    // tr.querySelector('.population').innerHTML = populationValue;
+
+
                 }
-            });
-        }
-    }, 500); // Delay of 0.5 seconds
-});
+                btnUpdateSubmit.textContent = 'Save';
+                btnUpdateSubmit.disabled = false;
+            }, 1000)
 
+        })
+})
 
+// add city
+addCityForm = document.getElementById('addCityForm')
+btnAddSubmit = document.getElementById('btn-add-submit')
 
+addCityForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    btnAddSubmit.textContent = 'Saving...'
+    btnAddSubmit.disabled = true
+
+    let form = new FormData(addCityForm)
+
+    console.log(addCityForm)
+
+    fetch('/addCity', {
+        method: 'post',
+        // headers: {
+        //     'Accept': 'application/json',
+        //     'Content-Type': 'application/json'
+        // },
+        body: new FormData(addCityForm)
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data)
+            setTimeout(() => {
+                Swal.fire({
+                    title: data.answer,
+                    icon: data.answer,
+                    html: data?.errors,
+                    confirmButtonText: 'Cool'
+                });
+                if (data.answer === 'success') {
+                    addCityForm.reset();
+                }
+                btnAddSubmit.textContent = 'Save';
+                btnAddSubmit.disabled = false;
+            }, 1000)
+        })
+})

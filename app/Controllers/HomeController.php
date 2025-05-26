@@ -5,7 +5,7 @@ namespace App\Controllers;
 
 use CrudAjax\Pagination;
 
-class HomeController
+class HomeController extends BaseController
 {
     public function index()
     {
@@ -15,9 +15,10 @@ class HomeController
         $pagination = new Pagination($countCities);
         $cities = db()->query("select * from city limit $limit offset {$pagination->getOffset()}")->get();
         return view('home', [
-            'cities' => $cities,
             'countCities' => $countCities,
-            'pagination' => $pagination
+            'pagination' => $pagination,
+            'table'=>$this->renderTable($cities)
+//            'cities'=>$cities
         ]);
     }
 

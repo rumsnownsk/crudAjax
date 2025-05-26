@@ -19,19 +19,23 @@
         <?php if (!empty($pages_left)) :
             foreach ($pages_left as $item) : ?>
                 <li class="page-item">
-                    <a class="page-link" href="<?= $item['link'] ?>">
+                    <a class="page-link" data-page="<?= $item['number'] ?>" href="<?= $item['link'] ?>">
                         <?= $item['number'] ?>
                     </a>
                 </li>
             <?php endforeach;
         endif; ?>
 
-        <li class="page-item active"><a class="page-link" href="#"><?= $current_page ?></a></li>
+        <li class="page-item active">
+            <a class="page-link" >
+                <?= $current_page ?>
+            </a>
+        </li>
 
         <?php if (!empty($pages_right)) :
             foreach ($pages_right as $item) : ?>
                 <li class="page-item">
-                    <a class="page-link" href="<?= $item['link'] ?>">
+                    <a class="page-link" data-page="<?= $item['number'] ?>" href="<?= $item['link'] ?>">
                         <?= $item['number'] ?>
                     </a>
                 </li>

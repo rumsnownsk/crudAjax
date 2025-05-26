@@ -127,4 +127,9 @@ class Pagination
         return $this->getHtml();
     }
 
+    public function setCurrentPage(int $page): void
+    {
+        $this->currentPage = $page;
+    }
+
 }

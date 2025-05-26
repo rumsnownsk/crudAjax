@@ -3,7 +3,8 @@
     "autoload": {
         "psr-4": {
             "CrudAjax\\": "core/",
-            "App\\Controllers\\": "app/Controllers/"
+            "App\\Controllers\\": "app/Controllers/",
+            "App\\Models\\": "app/Models/"
         }
     },
     "authors": [
@@ -15,6 +16,7 @@
     "require": {
         "php": ">=8.2",
         "symfony/var-dumper": "^7.2",
+        "vlucas/valitron": "^1.4",
         "ext-pdo": "*"
     }
 }
