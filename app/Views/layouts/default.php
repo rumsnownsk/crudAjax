@@ -7,6 +7,7 @@
     <title>CRUD AJAX</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
@@ -19,15 +20,31 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <button class="btn btn-primary rounded-0 btn-add" data-bs-toggle="modal" data-bs-target="#addCity">add
-                City
-            </button>
+            <div class="row">
+                <div class="col-md-6">
+
+                    <button class="btn btn-primary rounded-0 btn-add" data-bs-toggle="modal" data-bs-target="#addCity">
+                        add
+                        City
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <input type="text" id="search" class="form-control" placeholder="Search...">
+                        <span class="input-group-text" id="clear-search">&times;</span>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-        <section id="content" class="content">
-            <?= /** @var string $content */
-            $content; ?>
-        </section>
+    <div id="loader">
+        <img src="/assets/ripple.svg" alt="">
+    </div>
+    <section id="content" class="content">
+        <?= /** @var string $content */
+        $content; ?>
+    </section>
 
     <!---//end_content---->
 </div>
@@ -47,7 +64,8 @@
                 <form method="post" action="" id="updateCityForm">
                     <div class="mb-3">
                         <label for="editName" class="form-label">Name</label>
-                        <input type="text" name="editName" class="form-control" id="editName" placeholder="название города"
+                        <input type="text" name="editName" class="form-control" id="editName"
+                               placeholder="название города"
                                value="">
                     </div>
 
@@ -109,6 +127,7 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script src="assets/js/mark.min.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -11,20 +11,15 @@ class AjaxController extends BaseController
 
     public function __construct()
     {
-//        $data = json_decode(file_get_contents('php://input'), true); dd($data);
-//        echo json_encode([
-//            'answer' => 'success',
-//            'up' => 'public function updateCity',
-//            'POST' => $data
-//        ]);
     }
-    public function index()
+
+    public function pgn()
     {
         $data = request()->getData();
 
-        if($data['page']){
+        if ($data['page']) {
 
-            $countCities =db()->getCount('city');
+            $countCities = db()->getCount('city');
             $limit = PAGINATION_SETTINGS['perPage'];
 
             $pagination = new Pagination($countCities);
@@ -35,12 +30,39 @@ class AjaxController extends BaseController
             $cities = db()->query("select * from city limit $limit offset {$pagination->getOffset()}")->get();
 
             echo json_encode([
+                'answer' => 'success',
                 'countCities' => $countCities,
                 'pagination' => $pagination->getHtml(),
-                'table'=>$this->renderTable($cities)
+                'table' => $this->renderTable($cities)
             ]);
         }
         die;
+    }
+
+    public function reloadTable(): void
+    {
+//        dd('yap');
+//        if (request()->get('action') && request()->get('action') == 'reloadTable') {
+        $countCities = db()->getCount('city');
+        $limit = PAGINATION_SETTINGS['perPage'];
+
+        $pagination = new Pagination($countCities);
+        $cities = db()->query("select * from city limit $limit offset {$pagination->getOffset()}")->get();
+
+//        dd($pagination->getHtml());
+        echo json_encode([
+            'answer' => 'success',
+            'countCities' => $countCities,
+            'pagination' => $pagination->getHtml(),
+            'table'=>$this->renderTable($cities)
+        ]);
+        die;
+//        }
+
+
+//        return view('home', [
+//
+//        ]);
     }
 
     public function addCity()
@@ -58,12 +80,12 @@ class AjaxController extends BaseController
 
                 echo json_encode([
                     'answer' => 'success',
-                    'message'=>'data is saved successfully!!!'
+                    'message' => 'data is saved successfully!!!'
                 ]);
 
             } else {
                 echo json_encode([
-                    'answer'=>'error',
+                    'answer' => 'error',
                     'errors' => $city->listErrors()
                 ]);
             };
@@ -108,7 +130,7 @@ class AjaxController extends BaseController
                 ]);
             } else {
                 echo json_encode([
-                    'answer'=>'error',
+                    'answer' => 'error',
                     'errors' => $city->listErrors()
                 ]);
             };
@@ -126,7 +148,7 @@ class AjaxController extends BaseController
             'POST' => $_POST
         ]);
 
-            die;
+        die;
     }
 
     public function deleteCity(): void
@@ -149,6 +171,27 @@ class AjaxController extends BaseController
         }
     }
 
+    public function search(): void
+    {
+        $data = request()->getData();
+//        dd($data);
+        if (isset($data['search'])) {
+            $search = trim($data['search']);
+            $cities = db()->query("select * from city where name like ?", ['%' . $search . '%'])->get();
+            $countCities = count($cities);
+            echo json_encode([
+                'answer' => 'success',
+                'countCities' => $countCities,
+                'pagination' => null,
+                'table' => $this->renderTable($cities)
+            ]);
+        } else {
+            echo json_encode([
+                'answer' => 'error'
+            ]);
+        }
+        die;
+    }
 
 }
 

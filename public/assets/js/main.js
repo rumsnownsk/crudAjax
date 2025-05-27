@@ -1,6 +1,6 @@
 const divContent = document.querySelector('.content')
+const table = document.querySelector('.table-responsive')
 // delegate events (делегирование событий)
-
 divContent.addEventListener('click', (e) => {
     // pagination
     if (e.target.className === 'page-link') {
@@ -21,7 +21,7 @@ divContent.addEventListener('click', (e) => {
                 .then((data) => {
                     document.querySelector(".countCities").innerHTML = data.countCities
                     document.querySelector(".pagination").innerHTML = data.pagination
-                    document.querySelector(".table-responsive").innerHTML = data.table
+                    table.innerHTML = data.table
                 });
         }
     }
@@ -97,8 +97,8 @@ divContent.addEventListener('click', (e) => {
 })
 
 // Update city
-updateCityForm = document.getElementById('updateCityForm')
-btnUpdateSubmit = document.getElementById('btn-edit-submit')
+const updateCityForm = document.getElementById('updateCityForm')
+const btnUpdateSubmit = document.getElementById('btn-edit-submit')
 
 updateCityForm.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -113,6 +113,9 @@ updateCityForm.addEventListener('submit', (e) => {
 
     fetch('/updateCity', {
         method: 'post',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
         body: formData
     })
         .then((response) => response.json())
@@ -143,8 +146,8 @@ updateCityForm.addEventListener('submit', (e) => {
 })
 
 // add city
-addCityForm = document.getElementById('addCityForm')
-btnAddSubmit = document.getElementById('btn-add-submit')
+const addCityForm = document.getElementById('addCityForm')
+const btnAddSubmit = document.getElementById('btn-add-submit')
 
 addCityForm.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -181,3 +184,74 @@ addCityForm.addEventListener('submit', (e) => {
             }, 1000)
         })
 })
+
+const sField = document.getElementById('search');
+const loader = document.getElementById('loader');
+
+sField.addEventListener('input', (e) => {
+    let search = e.target.value.trim();
+    if (search.length > 2) {
+        // console.log(search)
+        let searchParams = new URLSearchParams({
+            search: search
+        }).toString();
+        fetch(`/search`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: searchParams
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.answer === 'success') {
+                    loader.style.display = 'block';
+                    setTimeout(() => {
+                        table.innerHTML = data.table
+                        let instance = new Mark(table)
+                        instance.mark(search);
+                        document.querySelector(".pagination").innerHTML = data.pagination
+                        loader.style.display = 'none';
+                    }, 500);
+
+                }
+            })
+    } else if (search.length === 0) {
+        let searchParams = new URLSearchParams({
+            action: 'reloadTable'
+        }).toString();
+        fetch('/reloadTable?${searchParams}', {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                document.querySelector(".countCities").innerHTML = data.countCities
+                document.querySelector(".pagination").innerHTML = data.pagination
+                table.innerHTML = data.table
+            });
+    }
+
+})
+
+document.getElementById('clear-search').addEventListener('click', () => {
+    sField.value = '';
+    let searchParams = new URLSearchParams({page: 1}).toString();
+
+    fetch(`/pgn?${searchParams}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            document.querySelector(".countCities").innerHTML = data.countCities
+            document.querySelector(".pagination").innerHTML = data.pagination
+            table.innerHTML = data.table
+        });
+})
+

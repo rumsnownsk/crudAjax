@@ -18,7 +18,6 @@ class HomeController extends BaseController
             'countCities' => $countCities,
             'pagination' => $pagination,
             'table'=>$this->renderTable($cities)
-//            'cities'=>$cities
         ]);
     }
 
