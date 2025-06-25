@@ -75,6 +75,7 @@ class Pagination
         $pages_left = [];
         $pages_right = [];
         $current_page = $this->currentPage;
+        $count_pages = $this->countPages;
 
         if ($this->currentPage > 1) {
             $back = $this->getLink($this->currentPage - 1);
@@ -107,7 +108,7 @@ class Pagination
         }
 
         return view()->renderPartial($this->tpl, compact('back', 'forward', 'first_page',
-            'last_page', 'pages_left', 'pages_right', 'current_page'));
+            'last_page', 'pages_left', 'pages_right', 'current_page', 'count_pages'));
     }
 
     protected function getLink($page): string
@@ -115,11 +116,14 @@ class Pagination
         if ($page == 1) {
             return rtrim($this->uri, '?&');
         }
-        if (str_contains($this->uri, '&') || str_contains($this->uri, '?')) {
-            return "{$this->uri}&page={$page}";
-        } else {
-            return "{$this->uri}?page={$page}";
-        }
+
+        return "?page={$page}";
+
+//        if (str_contains($this->uri, '&') || str_contains($this->uri, '?')) {
+//            return "{$this->uri}&page={$page}";
+//        } else {
+//            return "{$this->uri}?page={$page}";
+//        }
     }
 
     public function __toString(): string
