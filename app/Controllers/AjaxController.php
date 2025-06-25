@@ -41,15 +41,12 @@ class AjaxController extends BaseController
 
     public function reloadTable(): void
     {
-//        dd('yap');
-//        if (request()->get('action') && request()->get('action') == 'reloadTable') {
         $countCities = db()->getCount('city');
         $limit = PAGINATION_SETTINGS['perPage'];
 
         $pagination = new Pagination($countCities);
         $cities = db()->query("select * from city limit $limit offset {$pagination->getOffset()}")->get();
 
-//        dd($pagination->getHtml());
         echo json_encode([
             'answer' => 'success',
             'countCities' => $countCities,
@@ -57,12 +54,6 @@ class AjaxController extends BaseController
             'table'=>$this->renderTable($cities)
         ]);
         die;
-//        }
-
-
-//        return view('home', [
-//
-//        ]);
     }
 
     public function addCity()
