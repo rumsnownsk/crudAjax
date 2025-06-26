@@ -30,7 +30,7 @@ divContent.addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-edit')) {
         let id = +e.target.dataset.id;
         if (id) {
-            console.log('str32 = ' + id)
+            // console.log('str32 = ' + id)
 
             let searchParams = new URLSearchParams({
                 id: id,
@@ -45,11 +45,12 @@ divContent.addEventListener('click', (e) => {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log(data)
+                    // console.log(data)
                     if (data.answer === 'success') {
                         document.getElementById('editName').value = data.city.name;
                         document.getElementById('editPopulation').value = data.city.population;
-                        document.getElementById('editCity_id').innerHTML = data.city.id;
+                        document.getElementById('city_id').value = data.city.id;
+                        document.getElementById('header_city_id').innerHTML = data.city.id;
                     }
                 })
         }
@@ -102,21 +103,15 @@ const btnUpdateSubmit = document.getElementById('btn-edit-submit')
 
 updateCityForm.addEventListener('submit', (e) => {
     e.preventDefault()
-    updateCityForm.textContent = 'Saving...'
+    // updateCityForm.textContent = 'Saving...'
     btnUpdateSubmit.disabled = true
-
-    let formData = new FormData(updateCityForm)
-    formData.append('someKey', 'someValue')
-
-    console.log(formData.get('name'))
-    console.log(formData.get('someKey'))
 
     fetch('/updateCity', {
         method: 'post',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            // 'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: formData
+        body: new FormData(updateCityForm)
     })
         .then((response) => response.json())
         .then((data) => {
@@ -128,20 +123,20 @@ updateCityForm.addEventListener('submit', (e) => {
                     confirmButtonText: 'Cool'
                 });
                 if (data.answer === 'success') {
-                    console.log(data)
-                    // let idValue = document.getElementById('editCity_id').value;
-                    // let nameValue = document.getElementById('editName').value;
-                    // let populationValue = document.getElementById('editPopulation').value;
-                    // let tr = document.getElementById(`city-${idValue}`);
-                    // tr.querySelector('.name').innerHTML = nameValue;
-                    // tr.querySelector('.population').innerHTML = populationValue;
+                    let idValue = document.getElementById('city_id').value;
+                    let populationValue = document.getElementById('editPopulation').value;
+                    let nameValue = document.getElementById('editName').value;
+                    console.log('idValue = ' + idValue)
+                    console.log('populationValue = ' + populationValue)
+                    console.log('nameValue = ' + nameValue)
 
-
+                    let tr = document.getElementById(`city-${idValue}`);
+                    tr.querySelector('.name').innerHTML = nameValue;
+                    tr.querySelector('.population').innerHTML = populationValue;
                 }
-                btnUpdateSubmit.textContent = 'Save';
+                btnUpdateSubmit.textContent = 'Update';
                 btnUpdateSubmit.disabled = false;
             }, 1000)
-
         })
 })
 
@@ -155,8 +150,6 @@ addCityForm.addEventListener('submit', (e) => {
     btnAddSubmit.disabled = true
 
     let form = new FormData(addCityForm)
-
-    console.log(addCityForm)
 
     fetch('/addCity', {
         method: 'post',

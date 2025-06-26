@@ -104,7 +104,36 @@ class AjaxController extends BaseController
             die;
         }
 
-        if (isset($_POST['editCity'])) {
+//        if (isset($_POST['editCity'])) {
+//            $city = new City();
+//            $city->loadData();
+//            if ($city->validate()) {
+//                db()->query("UPDATE city
+//                                    SET `name` = ?, `population` = ?
+//                                    WHERE `id` = ?", [
+//                    $city->attributes['name'],
+//                    $city->attributes['population']
+//                ]);
+//
+//                echo json_encode([
+//                    'answer' => 'success',
+//                    'city' => $city
+//                ]);
+//            } else {
+//                echo json_encode([
+//                    'answer' => 'error',
+//                    'errors' => $city->listErrors()
+//                ]);
+//            };
+//            die;
+//        }
+    }
+
+
+    public function updateCity(): void
+    {
+//        dd(request()->post('city_id'));
+        if (isset($_POST['updateCity'])) {
             $city = new City();
             $city->loadData();
             if ($city->validate()) {
@@ -112,7 +141,8 @@ class AjaxController extends BaseController
                                     SET `name` = ?, `population` = ?
                                     WHERE `id` = ?", [
                     $city->attributes['name'],
-                    $city->attributes['population']
+                    $city->attributes['population'],
+                    request()->post('city_id')
                 ]);
 
                 echo json_encode([
@@ -127,18 +157,16 @@ class AjaxController extends BaseController
             };
             die;
         }
-    }
 
 
-    public function updateCity(): void
-    {
-        $data = json_decode(file_get_contents('php://input'), true);
-        echo json_encode([
-            'answer' => 'success',
-            'message' => 'ответ с сервера, из метода updateCity',
-            'POST' => $_POST
-        ]);
-
+//        dd($_POST);
+//        $data = json_decode(file_get_contents('php://input'), true);
+//        echo json_encode([
+//            'answer' => 'success',
+//            'message' => 'ответ с сервера, из метода updateCity',
+//            'POST' => $_POST
+//        ]);
+//
         die;
     }
 

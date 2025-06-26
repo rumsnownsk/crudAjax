@@ -59,24 +59,24 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Редактировать город # <span id="editCity_id"></span></p>
+                <p>Редактировать город # <span id="header_city_id"></span></p>
 
                 <form method="post" action="" id="updateCityForm">
                     <div class="mb-3">
                         <label for="editName" class="form-label">Name</label>
-                        <input type="text" name="editName" class="form-control" id="editName"
+                        <input type="text" name="name" class="form-control" id="editName"
                                placeholder="название города"
                                value="">
                     </div>
 
                     <div class="mb-3">
                         <label for="editPopulation" class="form-label">Population</label>
-                        <input type="number" name="editPopulation" class="form-control" id="editPopulation"
+                        <input type="number" name="population" class="form-control" id="editPopulation"
                                placeholder="население" value="">
 
 
-                        <input type="hidden" name="getCity">
-                        <input type="hidden" name="editCity_id" id="editCity_id">
+                        <input type="hidden" name="updateCity">
+                        <input type="hidden" name="city_id" id="city_id">
                     </div>
 
                     <div class="modal-footer">
