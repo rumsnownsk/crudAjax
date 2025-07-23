@@ -1,3 +1,11 @@
+body{
+    background-color: rgb(219, 219, 219);
+}
+
+.btnBack{
+    position: absolute;
+}
+
 #loader {
     background: rgba(255, 255, 255, 0.7);
     text-align: center;

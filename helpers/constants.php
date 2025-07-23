@@ -1,6 +1,8 @@
 <?php
 
 define("ROOT", dirname(__DIR__));
+define("HOST", $_SERVER['HTTP_HOST']);
+
 const ERROR_LOGS = ROOT.'/tmp/errors.log';
 const SETTINGS = ROOT.'/settings';
 const APP = ROOT.'/app';
